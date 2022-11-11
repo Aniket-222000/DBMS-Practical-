@@ -24,10 +24,24 @@ Assigned-To(Project_id,Emp_id)
 
 Find the SQL queries for the following:
 1. Get the details of employees working on project C353
+-> select A.empid, emp_name from A.Assigned_To A, Employee where project_id = 'C353' ;
+
 2. Get employee number of employees working on project C353
+->select emp_id from Assigned_To where projectid = 'C353'; 
+
 3. Obtain details of employees working on Database project
+-> select Emp_name, A. Emp_id from A. Assigned_To A, Employee where project_id in (select P. project_id
+from P. project where P. project_name = 'Database');
+
 4. Get details of employees working on both C353 and C354
+-> (select Emp_name, A. emp_id from Assigned_to A, Employee where A.Project_id = C354)
+intersect
+(select emp_name, A.empid from A.Assigned_To A, Employee where project_id = 'C354');
+
 5. Get employee numbers of employees who do not work on project C453
+-> (select emp_id from Employee)
+minus
+(select emp_id from assigned_to where project_id = 'C453');
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 8] Consider the following database
@@ -37,16 +51,46 @@ Duty_allocation(posting_no,emp_no,day,shift)
 
 Find the SQL queries for the following:
 1. Get the duty allocation details for emp_no 123461 for the month of April 1986.
+-> select posting_no., shift, day from Duty_allocation where emp_no = 123461 and
+Day ≥ 19860401 and Day ≤ 19860430 ;
+
 2. Find the shift details for Employee ‘xyz’
+-> select posting_no., shift, day from Duty_allocation, Employee
+where Duty allocation.emp_no. = Employee.emp_no and Name = 'XYZ';
+
 3. Get employees whose rate of pay is more than or equal to the rate of pay of employee ‘xyz’
+-> select S.name, S.pay_rate from Employee as S, Employee as T where S.pay_rate > T.pay_rate
+and T.name = 'XYZ';
+
 4. Get the names and pay rates of employees with emp_no less than 123460 whose rate of pay is 
 more than the rate of pay of at least one employee with emp_no greater than or equal to 123460.
+-> select name, pay_rate from Employee where emp_no < 123460 and pay_rate > some
+(select pay_rate from Employee where emp_no ≥ 123460); 
+
 5. Find the names of employees who are assigned to all positions that require a Chef’s skill
-6 .Find the employees with the lowest pay rate
-7 .Get the employee numbers of all employees working on at least two dates.
-8 .Get a list of names of employees with the skill of Chef who are assigned a duty
-9 .Get a list of employees not assigned a duty
-10.Get a count of different employees on each shift
+-> select S.Name from Employee S where (select posting_no from Duty_allocation D where S.emp_no = D.emp_no)
+contains
+(select P.posting_no from position P where P.skill = 'Chef');
+
+6.Find the employees with the lowest pay rate
+-> select emp_no, Name, Pay_rate from Employee where pay_rate ≤ all
+(select pay_rate from Employee)
+
+7. Get the employee numbers of all employees working on at least two dates.
+->  select emp_no from Duty_allocation group by emp_no having (count;*) > 1
+
+8. Get a list of names of employees with the skill of Chef who are assigned a duty
+-> select Name from Employee where emp_no in ((select emp_no from Employee where skill = 'Chef')
+intersect
+(select emp_no from Duty_allocation));
+
+9. Get a list of employees not assigned a duty
+-> (select emp_no from Employee)
+minus
+(select emp_no from Duty_allocation)
+
+10. Get a count of different employees on each shift
+-> select shift, count (distinct emp_no) from Duty_allocation group by shift;
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -57,48 +101,123 @@ more than the rate of pay of at least one employee with emp_no greater than or e
 • Borrow(loanno,cname,bname, amount)
 Add primary key and foreign key wherever applicable.
 
+Tables :
+1) create table deposit(actno varchar2(5),cname varchar2(18),bname varchar2(18),amount number(8,2),adate 
+date); 
+2) create table branch(bname varchar2(18),city varchar2(18)); 
+3) create table customer(cname varchar2(18), city varchar2(18)); 
+4) create table borrow(loanno varchar2(5),cname varchar2(18),bname varchar2(18),amount number(8,2)); 
+
+DEPOSIT TABLE: 
+1) insert into deposit values('100','Anil','VRCE',1000.00,'1-mar-95'); 
+2) insert into deposit values('101','Sunil','AJNI',5000.00,'4-jan-96'); 
+3) insert into deposit values('102','Mehul','KAROLBAGH',3500.00,'17-nov-95'); 
+4) insert into deposit values('104','Madhuri','CHANDNI',1200.00,'17-dec-95'); 
+5) insert into deposit values('105','Pramod','M.G.ROAD',3000.00,'27-mar-96'); 
+6) insert into deposit values('106','Sandip','ANDHERI',2000.00,'31-mar-96'); 
+7) insert into deposit values('107','Shivani','VIRAR',1000.00,'5-sep-95'); 
+8) insert into deposit values('108','Kranti','NEHRU PLACE',5000.00,'2-jul-95'); 
+9) insert into deposit values('109','Minu','POWAI',7000.00,'10-aug-95'); 
+
+BRANCH TABLE: 
+1) insert into branch values('VRCE','Nagpur'); 
+2) insert into branch values('AJNI','Nagpur'); 
+3) insert into branch values('KAROLBAGH','Delhi'); 
+4) insert into branch values('CHANDNI','Delhi'); 
+5) insert into branch values('DHARAMPETH','Nagpur'); 
+6) insert into branch values('M.G.ROAD','Bangalore'); 
+7) insert into branch values('ANDHERI','Bombay'); 
+8) insert into branch values('VIRAR','Bombay'); 
+9) insert into branch values('NEHRU PLACE','Delhi'); 
+10) insert into branch values('POWAI','Bombay'); 
+
+CUSTOMER TABLE: 
+1) insert into customer values('Anil','Calcutta'); 
+2) insert into customer values('Sunil','Delhi'); 
+3) insert into customer values('Mehul','Baroda'); 
+4) insert into customer values('Mandar','Patna'); 
+5) insert into customer values('Madhuri','Nagpur'); 
+6) insert into customer values('Pramod','Nagpur'); 
+7) insert into customer values('Sandip','Surat'); 
+8) insert into customer values('Shivani','Bombay'); 
+9) insert into customer values('Kranti','Bombay'); 
+10) insert into customer values('Naren','Bombay');
+
+BORROW TABLE: 
+1) insert into borrow values('201','Anil','VRCE',1000); 
+2) insert into borrow values('206','Mehul','AJNI',5000); 
+3) insert into borrow values('311','Sunil','DHARAMPETH',3000); 
+4) insert into borrow values('321','Madhuri','ANDHERI',2000); 
+5) insert into borrow values('375','Pramod','VIRAR',8000); 
+6) insert into borrow values('481','Kranti','NEHRU PLACE',3000);
+
 Insert data into the above created tables.
 1. Display names of depositors having amount greater than 4000.
+-> select cname from deposit where amount>'4000';
+
 2. Display account date of customers Anil 
+-> select adate from deposit where cname='Anil'; 
+
 3. Display account no. and deposit amount of customers having account opened 
 between dates 1-12-96 and 1-5-97
+->  select actno,amount from deposit where adate between '01-DEC-95' and '01-MAY-96';
+
 4. Find the average account balance at the Perryridge branch.
+-> select avg (balance) from account where branch-name = “Perryridge” ;
+
 5. Find the names of all branches where the average account balance is more 
 than $1,200.
-6. Delete depositors having deposit less than 5000
-7. Create a view on deposit table.
+-> select branch-name, avg (balance) from account group by branch-name having avg (balance) > 1200
 
+6. Delete depositors having deposit less than 5000
+-> DELETE FROM DEPOSIT WHERE AMOUNT < 5000 
+
+7. Create a view on deposit table.
+->
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-10] Create the following tables. And Solve following queries by SQL
-1. Deposit (actno,cname,bname,amount,adate)
-2. Branch (bname,city)
-3. Customers (cname, city)
-4. Borrow(loanno,cname,bname, amount)
-Add primary key and foreign key wherever applicable.
-
+10] 
 Insert data into the above created tables.
 a. Display names of all branches located in city Bombay.
+-> select bname from branch where city='Bombay'; 
+
 b. Display account no. and amount of depositors.
+-> select actno,amount from deposit;
+
 c. Update the city of customers Anil from Pune to Mumbai
+->
 d. Find the number of depositors in the bank
+-> select count (distinct customer-name)
+from depositor
+
 e. Calculate Min,Max amount of customers.
+-> 
 f. Create an index on deposit table
+-> CREATE INDEX index_customer_branch ON deposit (cname,bname);  
+
 g. Create View on Borrow table.
+-> CREATE VIEW [Customers Detail] AS SELECT cname, loanno , bname FROM borrow WHERE bname = 'ANDHERI';
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-11] Create the following tables. Solve queries by SQL
-• Deposit (actno,cname,bname,amount,adate)
-• Branch (bname,city)
-• Customers (cname, city)
-• Borrow(loanno,cname,bname, amount)
-Add primary key and foreign key wherever applicable.
-
+11] 
 Insert data into the above created tables.
 a. Display account date of customers Anil.
+-> select adate from deposit where cname='Anil'; 
+
 b. Modify the size of attribute of amount in deposit
+-> alter table deposit modify amount number(10,2);
+
 c. Display names of customers living in city pune.
+-> select cname from customer where city='pune'; 
+
 d. Display name of the city where branch KAROLBAGH is located.
+-> select city from branch where bname='KAROLBAGH';
+
 e. Find the number of tuples in the customer relation
+-> select count (*) from customer;
+
 f. Delete all the record of customers Sunil
+->delete from deposit where cname='Sunil';
+
 g. Create a view on deposit table.
+CREATE VIEW [KAROLBAGH Branch] AS SELECT cname FROM deposit WHERE bname = 'KAROLBAGH';
