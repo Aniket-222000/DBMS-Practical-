@@ -41,10 +41,10 @@ b.hotelno = h.hotelno)
 GROUP BY hotelno;
 
 9. Create index on one of the field and show is performance in query.
--> 
+-> CREATE INDEX index_hotel ON Hotel (hotelno,Name,City);  
 
 10. Create one view on above database and query it.
-->
+-> CREATE VIEW [Hotel Detail] AS SELECT Name,City FROM Hotel WHERE hotelno = 101 ;
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 7] Consider the following database
 Project(project_id,proj_name,chief_arch) , project_id is primary key
@@ -204,7 +204,7 @@ than $1,200.
 -> DELETE FROM DEPOSIT WHERE AMOUNT < 5000 
 
 7. Create a view on deposit table.
-->
+->CREATE VIEW [Customers Detail] AS SELECT cname,bname FROM deposit WHERE actno = 101 ;
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 10] 
