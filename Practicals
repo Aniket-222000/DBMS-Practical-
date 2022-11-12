@@ -6,14 +6,28 @@ Guest (GuestNo, GuestName, GuestAddress)
 Solve following queries by SQL
 
 1. List full details of all hotels.
+-> select * from hotel;
+
 2. List full details of all hotels in London.
+-> select * from hotel where city="London";
+
 3. List all guests currently staying at the Grosvenor Hotel.
+
 4. List the names and addresses of all guests in London, alphabetically ordered by name.
+-> SELECT guestName, guestAddress FROM Guest WHERE address LIKE ‘%London%’
+ ORDER BY guestName; 
+ 
 5. List the bookings for which no date_to has been specified.
+
 6. How many hotels are there?
+-> SELECT COUNT(*) FROM Hotel; 
+
 7. List the rooms that are currently unoccupied at the Grosvenor Hotel.
+
 8. What is the lost income from unoccupied rooms at each hotel today?
+
 9. Create index on one of the field and show is performance in query.
+
 10. Create one view on above database and query it.
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------
