@@ -18,18 +18,33 @@ Solve following queries by SQL
  ORDER BY guestName; 
  
 5. List the bookings for which no date_to has been specified.
+-> SELECT * FROM Booking WHERE dateTo IS NULL;
 
 6. How many hotels are there?
 -> SELECT COUNT(*) FROM Hotel; 
 
 7. List the rooms that are currently unoccupied at the Grosvenor Hotel.
+-> SELECT * FROM room r
+WHERE roomno NOT IN
+(SELECT roomno FROM booking b, hotel h
+WHERE (datefrom <= CURRENT_DATE AND
+dateto >= CURRENT_DATE) AND
+b.hotelno = h.hotelno AND hotelname = 'Grosvenor');
 
 8. What is the lost income from unoccupied rooms at each hotel today?
+-> SELECT hotelno, SUM(price) FROM room r
+WHERE roomno NOT IN
+(SELECT roomno FROM booking b, hotel h
+WHERE (datefrom <= CURRENT_DATE AND
+dateto >= CURRENT_DATE) AND
+b.hotelno = h.hotelno)
+GROUP BY hotelno;
 
 9. Create index on one of the field and show is performance in query.
+-> 
 
 10. Create one view on above database and query it.
-
+->
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 7] Consider the following database
 Project(project_id,proj_name,chief_arch) , project_id is primary key
@@ -122,48 +137,50 @@ date);
 3) create table customer(cname varchar2(18), city varchar2(18)); 
 4) create table borrow(loanno varchar2(5),cname varchar2(18),bname varchar2(18),amount number(8,2)); 
 
+
+
 DEPOSIT TABLE: 
-1) insert into deposit values('100','Anil','VRCE',1000.00,'1-mar-95'); 
-2) insert into deposit values('101','Sunil','AJNI',5000.00,'4-jan-96'); 
-3) insert into deposit values('102','Mehul','KAROLBAGH',3500.00,'17-nov-95'); 
-4) insert into deposit values('104','Madhuri','CHANDNI',1200.00,'17-dec-95'); 
-5) insert into deposit values('105','Pramod','M.G.ROAD',3000.00,'27-mar-96'); 
-6) insert into deposit values('106','Sandip','ANDHERI',2000.00,'31-mar-96'); 
-7) insert into deposit values('107','Shivani','VIRAR',1000.00,'5-sep-95'); 
-8) insert into deposit values('108','Kranti','NEHRU PLACE',5000.00,'2-jul-95'); 
-9) insert into deposit values('109','Minu','POWAI',7000.00,'10-aug-95'); 
+1) insert into deposit values('100','Anil','wakad',1000.00,'1-mar-95'); 
+2) insert into deposit values('101','Sunil','Pimpri',5000.00,'4-jan-96'); 
+3) insert into deposit values('102','Aniket','KAROLBAGH',3500.00,'17-nov-95'); 
+4) insert into deposit values('104','Krishna','bahgya nagar',1200.00,'17-dec-95'); 
+5) insert into deposit values('105','Sanket','nehru nagar',3000.00,'27-mar-96'); 
+6) insert into deposit values('106','Anuj','shivaji nagar',2000.00,'31-mar-96'); 
+7) insert into deposit values('107','Shriram','Karvenagar',1000.00,'5-sep-95'); 
+8) insert into deposit values('108','Bhosle','chinchwad',5000.00,'2-jul-95'); 
+9) insert into deposit values('109','Anuj','akhurdi',7000.00,'10-aug-95'); 
 
 BRANCH TABLE: 
-1) insert into branch values('VRCE','Nagpur'); 
-2) insert into branch values('AJNI','Nagpur'); 
+1) insert into branch values('wakad','Pune'); 
+2) insert into branch values('Pimpri','Nagpur'); 
 3) insert into branch values('KAROLBAGH','Delhi'); 
-4) insert into branch values('CHANDNI','Delhi'); 
-5) insert into branch values('DHARAMPETH','Nagpur'); 
-6) insert into branch values('M.G.ROAD','Bangalore'); 
-7) insert into branch values('ANDHERI','Bombay'); 
-8) insert into branch values('VIRAR','Bombay'); 
-9) insert into branch values('NEHRU PLACE','Delhi'); 
+4) insert into branch values('bahgya nagar','Delhi'); 
+5) insert into branch values('nehru nagar','Nagpur'); 
+6) insert into branch values('shivaji nagar','Solapur'); 
+7) insert into branch values('Karvenagar','Bombay'); 
+8) insert into branch values('chinchwad','Umarkhed'); 
+9) insert into branch values('akhurdi,'Delhi'); 
 10) insert into branch values('POWAI','Bombay'); 
 
 CUSTOMER TABLE: 
 1) insert into customer values('Anil','Calcutta'); 
 2) insert into customer values('Sunil','Delhi'); 
-3) insert into customer values('Mehul','Baroda'); 
-4) insert into customer values('Mandar','Patna'); 
-5) insert into customer values('Madhuri','Nagpur'); 
-6) insert into customer values('Pramod','Nagpur'); 
-7) insert into customer values('Sandip','Surat'); 
-8) insert into customer values('Shivani','Bombay'); 
-9) insert into customer values('Kranti','Bombay'); 
-10) insert into customer values('Naren','Bombay');
+3) insert into customer values('Aniket','Pune'); 
+4) insert into customer values('Krishna','Nanded'); 
+5) insert into customer values('Sanket','Solapur'); 
+6) insert into customer values('Anuj','Nagpur'); 
+7) insert into customer values('Shriram','Surat'); 
+8) insert into customer values('Bhosle','Bombay'); 
+9) insert into customer values('Om','Bombay'); 
+10) insert into customer values('Deva','Nashik');
 
 BORROW TABLE: 
-1) insert into borrow values('201','Anil','VRCE',1000); 
-2) insert into borrow values('206','Mehul','AJNI',5000); 
+1) insert into borrow values('201','Anil','Calcutta',1000); 
+2) insert into borrow values('206','Shriram','Nashik',5000); 
 3) insert into borrow values('311','Sunil','DHARAMPETH',3000); 
-4) insert into borrow values('321','Madhuri','ANDHERI',2000); 
-5) insert into borrow values('375','Pramod','VIRAR',8000); 
-6) insert into borrow values('481','Kranti','NEHRU PLACE',3000);
+4) insert into borrow values('321','Sanket','Solapur',2000); 
+5) insert into borrow values('375','Krishna','Nanded',8000); 
+6) insert into borrow values('481','Bhosle','Mumbai',3000);
 
 Insert data into the above created tables.
 1. Display names of depositors having amount greater than 4000.
