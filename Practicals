@@ -12,7 +12,15 @@ Solve following queries by SQL
 -> select * from hotel where city="London";
 
 3. List all guests currently staying at the Grosvenor Hotel.
-
+-> SELECT * FROM Guest
+ WHERE guestNo =
+ (SELECT guestNo FROM Booking
+ WHERE dateFrom <= CURRENT_DATE AND
+ dateTo >= CURRENT_DATE AND
+ hotelNo =
+ (SELECT hotelNo FROM Hotel
+ WHERE hotelName = ‘Grosvenor Hotel’));
+ 
 4. List the names and addresses of all guests in London, alphabetically ordered by name.
 -> SELECT guestName, guestAddress FROM Guest WHERE address LIKE ‘%London%’
  ORDER BY guestName; 
